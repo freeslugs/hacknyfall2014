@@ -1,10 +1,12 @@
 import requests
 from flask import Flask, request
 from flask.ext import restful
+from flask.ext.mongoengine import MongoEngine
 
 
 app = Flask(__name__)
 api = restful.Api(app)
+db = MongoEngine(app)
 
 ### USER GUI ###
 
