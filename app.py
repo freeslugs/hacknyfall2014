@@ -17,11 +17,11 @@ clarifai_token = "IudTqeJRSFLpTl3Dj0nPgPP6AVsLeS"
 
 class Tag(db.Document):
   tag_id = StringField(required=True)
-  prob = DecimalField(required=True)
+  prob = DecimalField(required=True, precision=10)
 
 class Coordinate(db.Document):
   tag_id = StringField(required=True)
-  prob = DecimalField(required=True)
+  prob = DecimalField(required=True, precision=10)
 
 class Image(db.Document):
   url = db.StringField(required=True)
@@ -70,15 +70,15 @@ class ImageProcessing(restful.Resource):
   def get(self):
     user_id = request.args['user_id']
     user = User.objects(user_id=user_id).first()
-    # if not user.images:
-    get_images_instagram(user)
     
-    for image in user.images:
-      if not image.tags:
+    if len(user.coordinates) == 0:      
+      get_images_instagram(user)
+      for image in user.images:
         clarifai_get_tags(user, image)
-
-    for tag_id in user.coordinates:
-      user.coordinates[tag_id] = (user.coordinates[tag_id] / len(user.images))
+      for c in user.coordinates:
+        c['prob'] = c['prob'] / len(user.images)
+    
+    print len(user.coordinates)
     # return json_util.dumps(user)
     # return {'data': user.images.to_json()}
     # print get_clarifai()
@@ -130,6 +130,8 @@ def clarifai_get_tags(user, image, token=clarifai_token):
       new_tag = MasterTags(tag=tags[i])
       new_tag.save()
       tag = Tag(prob=probs[i], tag_id=str(new_tag.id))
+    
+    print "saving new tag"
     tag.save()
     image.tags.append(tag)
     
@@ -139,14 +141,15 @@ def clarifai_get_tags(user, image, token=clarifai_token):
       if c['tag_id'] == tag.tag_id:
         existing_coordinate = c
 
-    # print existing_coordinate['prob']
     if existing_coordinate['prob']:
+      print existing_coordinate['tag_id'], existing_coordinate['prob']
       existing_coordinate['prob'] += tag.prob
+      print existing_coordinate['tag_id'], existing_coordinate['prob']
     else: 
-      print tag.tag_id
-      # user.coordinates.append({'tag_id': tag.tag_id, 'prob': tag.prob})
+      c = Coordinate(tag_id=tag.tag_id, prob=tag.prob)
+      c.save()
+      user.coordinates.append(c)
     
-  print user.coordinates
   image.save()
   user.save()
 
