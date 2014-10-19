@@ -48,6 +48,10 @@
       $(document).ready(function() {
         var userId = "7152524";
         $.get('http://127.0.0.1:5000/image-processing?user_id='+ userId, cb);
+
+        $("#explore").click(function () {
+          console.log("explore")
+        })
       });
 
       function cb (data) {
