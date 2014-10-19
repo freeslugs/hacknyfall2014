@@ -5,11 +5,13 @@ from flask.ext.mongoengine import *
 from mongoengine import *
 import json
 import sys, math
+from flask.ext.cors import CORS, cross_origin
 
 app = Flask(__name__)
 app.config["MONGODB_SETTINGS"] = {'DB': "hacknyfall2014"}
 connect('hacknyfall2014', host='mongodb://columbia:giladabc@ds047040.mongolab.com:47040/hacknyfall2014')
 api = restful.Api(app)
+cors = CORS(app)
 db = MongoEngine(app)
 app.debug = True
 
@@ -158,11 +160,17 @@ class ImageProcessing(restful.Resource):
         c['prob'] = c['prob'] / len(user.images)
     
     print len(user.coordinates)
+
+    images = []
+    for image in user.images:
+      img = { 'url': image['url'], 'id': str(image['id']) }
+      images.append(img)
+      # image_id = image['$id']
     # return json_util.dumps(user)
     # return {'data': user.images.to_json()}
     # print get_clarifai()
     # test = user.images[0].tags[0].tag
-    return "test"
+    return {'data' : images}
 
 
 api.add_resource(ImageProcessing, '/image-processing')
