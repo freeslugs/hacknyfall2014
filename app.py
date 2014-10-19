@@ -4,7 +4,7 @@ from flask.ext import restful
 from flask.ext.mongoengine import *
 from mongoengine import *
 import json
-# from bson import json_util
+import sys, math
 
 app = Flask(__name__)
 app.config["MONGODB_SETTINGS"] = {'DB': "hacknyfall2014"}
@@ -65,6 +65,62 @@ def instagram_callback():
 # https://api.instagram.com/oauth/authorize/?client_id=96eea83eeeed431490a2997dcb597d22&redirect_uri=http://127.0.0.1:5000/instagram-redirect&response_type=code
 
 ### API ###
+#
+#
+class Exploration(restful.Resource):
+  def get(self):
+    user = User.objects(user_id=request.args['user_id']).first()
+    # return user.user_id
+    test = nearest_gallery(user)
+    return test.user_id
+    # location=
+    # status='gallery' # or 'image'
+
+def nearest_gallery(current_gal):
+  galleries = User.objects()
+  # visited (from front end)
+  min_dist = sys.maxint
+
+  for gallery in galleries:
+    # print gallery
+    if gallery != current_gal:
+      # visited here? 
+      next_coord = gallery['coordinates']
+      # print next_coord
+      dist=distance(current_gal['coordinates'], next_coord)
+      if dist<distance:
+        min_dist=dist
+        next_gal=gallery        
+  return next_gal
+
+def nearest_image(current_img):
+  
+
+def distance(curr, nxt):
+  distance=0
+  done=False
+  for c in curr:
+    curr_id=c['tag_id']
+    for n in nxt:
+      if curr_id == n['tag_id']:
+        distance += (c['prob']-n['prob'])**2
+        done = True
+        break
+    if done == False:
+      distance+=(c['prob'])**2
+    done=False
+ 
+  for n in nxt:
+    nxt_id = n['tag_id']
+    for c in curr:
+      if nxt_id==c['tag_id']:
+        done=True
+    if done==False:
+      distance+=n['prob']**2
+    done=False
+  return math.sqrt(distance)
+
+
 
 class ImageProcessing(restful.Resource):
   def get(self):
@@ -85,9 +141,9 @@ class ImageProcessing(restful.Resource):
     # test = user.images[0].tags[0].tag
     return "test"
 
-# api.add_resource(Instagram, '/instagram')
-# api.add_resource(Clarifai, '/clarifai')
+
 api.add_resource(ImageProcessing, '/image-processing')
+api.add_resource(Exploration, '/exploration')
 
 
 def get_user_info(code):
@@ -154,6 +210,8 @@ def clarifai_get_tags(user, image, token=clarifai_token):
   user.save()
 
   return "success!"
+
+
 
 if __name__ == '__main__':
 	app.run()
