@@ -2,6 +2,7 @@ import requests
 from flask import Flask, request
 from flask.ext import restful
 from flask.ext.mongoengine import MongoEngine
+from mongoengine import *
 
 
 app = Flask(__name__)
@@ -9,6 +10,17 @@ app.config["MONGODB_SETTINGS"] = {'DB': "hacknyfall2014"}
 connect('hacknyfall2014', host='mongodb://columbia:giladabc@ds047040.mongolab.com:47040/hacknyfall2014')
 api = restful.Api(app)
 db = MongoEngine(app)
+
+class Image(db.Document):
+  url = db.StringField(required=True)
+  tags = ListField(StringField(max_length=55))
+
+class User(db.Document):
+  name = db.StringField(required=True)
+  user_id = db.StringField(required=True)
+  token = db.StringField(required=True)
+  images = ListField(ReferenceField(Image))
+
 
 ### USER GUI ###
 
