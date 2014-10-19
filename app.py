@@ -28,6 +28,7 @@ class Coordinate(db.Document):
 class Image(db.Document):
   url = db.StringField(required=True)
   tags = ListField(ReferenceField(Tag))
+  gallery = ReferenceField('User')
 
 class User(db.Document):
   name = db.StringField(required=True)
@@ -73,25 +74,26 @@ class Exploration(restful.Resource):
   def get(self):
     the_id = request.args['id']
     status = request.args['status']
+    visited = request.args['visited']
     # return user.user_id
     if status=="gallery":
-      test=nearest_gallery(User.objects(user_id=the_id).first())
+      test=nearest_gallery(User.objects(user_id=the_id).first(),visited)
       return "gallery"+test.user_id
     else:
       image=Image.objects(id=the_id).first()
-      test = nearest_image(image)
+      test = nearest_image(image,visited)
       return "image"+str(test.id)
     # location=
     # status='gallery' # or 'image'
 
-def nearest_gallery(current_gal):
+def nearest_gallery(current_gal,visited):
   galleries = User.objects()
   # visited (from front end)
   min_dist = sys.maxint
 
   for gallery in galleries:
     # print gallery
-    if gallery != current_gal:
+    if gallery != current_gal and gallery.user_id not in visited:
       # visited here? 
       next_coord = gallery['coordinates']
       # print next_coord
@@ -107,12 +109,12 @@ def locate_image(img):
       coordinates.append(t)
   return coordinates
 
-def nearest_image(curr_img):
+def nearest_image(curr_img, visited):
   curr_loc=locate_image(curr_img)
   images=Image.objects()
   min_dist = sys.maxint
   for img in images:
-    if img != curr_img: #visited
+    if img != curr_img and str(img.id) not in visited: #visited
       next_loc=locate_image(img)
       dist=distance(curr_loc,next_loc)
       if dist<min_dist:
@@ -191,7 +193,7 @@ def get_images_instagram(user):
   r = requests.get("https://api.instagram.com/v1/users/self/media/recent?access_token="+access_token)
   images = r.json()
   for image in images['data']:
-    img = Image(url=image['images']['standard_resolution']['url'])
+    img = Image(gallery=user,url=image['images']['standard_resolution']['url'])
     img.save()
     user.images.append(img)
     user.save()
