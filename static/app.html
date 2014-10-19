@@ -52,7 +52,7 @@
             className += ' active'
           }
           var el = "<div class='"+ className + "'>" + 
-                   "<div class='col-md-2 col-sm-6 col-xs-12'><a href='#'><img src='" + photos[i].url + "' class='img-responsive'></a>" + 
+                   "<div class='col-md-3'><a href='#'><img id='" + photos[i].id + "' src='" + photos[i].url + "' class='img-responsive'></a>" + 
                    "</div>";      
           var img = $(el);
           
@@ -71,7 +71,7 @@
           }
           next.children(':first-child').clone().appendTo($(this));
           
-          for (var i=0;i<4;i++) {
+          for (var i=0;i<2;i++) {
             next=next.next();
             if (!next.length) {
               next = $(this).siblings(':first');
