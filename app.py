@@ -2,7 +2,7 @@ import requests
 from flask import Flask, request
 from flask.ext import restful
 from flask.ext.mongoengine import MongoEngine
-
+from mongoengine import connect
 
 app = Flask(__name__)
 app.config["MONGODB_SETTINGS"] = {'DB': "hacknyfall2014"}
