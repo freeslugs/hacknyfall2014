@@ -9,6 +9,14 @@
 }
 
 .carousel-control > i {
-	margin-top: 15px !important;
+	margin-top: 50px !important;
 	color: #517fa4;
+}
+
+#explore {
+	float: right;
+}
+
+#explore:hover {
+	text-decoration: none;
 }
