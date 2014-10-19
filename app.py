@@ -1,6 +1,7 @@
 import requests
-from flask import Flask
+from flask import Flask, request
 from flask.ext import restful
+
 
 app = Flask(__name__)
 api = restful.Api(app)
@@ -10,6 +11,10 @@ api = restful.Api(app)
 @app.route('/')
 def hello_world():
   return 'Hello World!'
+
+@app.route('/insta-redirect')
+def instagram_callback():
+  return parse_instagram_callback(request.args['code'])
 
 
 ### API ###
@@ -43,6 +48,10 @@ def clarifai_get_access_token():
 def clarifai_get_tags(token, url="http://www.clarifai.com/img/metro-north.jpg"):
 	r = requests.get('https://api.clarifai.com/v1/tag/?url='+url+'&access_token='+token)
 	return r.json()
+
+
+def parse_instagram_callback(code):
+  return "hello"
 
 if __name__ == '__main__':
 	app.run()
