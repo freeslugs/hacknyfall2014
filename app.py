@@ -14,9 +14,25 @@ db = MongoEngine(app)
 def hello_world():
   return 'Hello World!'
 
-@app.route('/insta-redirect')
+@app.route('/instagram-redirect')
 def instagram_callback():
-  return parse_instagram_callback(request.args['code'])
+  code = request.args['code']
+  token = get_access_token_instagram(code)
+  return token
+  # save_token 
+  # render gallery
+  
+  # pics = get_pics_instagram(token)
+
+
+# client side auth 
+# https://api.instagram.com/oauth/authorize/?client_id=96eea83eeeed431490a2997dcb597d22&redirect_uri=http://127.0.0.1:5000/instagram-redirect&response_type=code
+
+def get_access_token_instagram(code):
+	payload = {'client_id': '96eea83eeeed431490a2997dcb597d22', 'client_secret': 'd9a08fd300854c9e9da1a4fe2035db1b', 'grant_type': 'authorization_code', 'redirect_uri': 'http://127.0.0.1:5000/instagram-redirect', 'code':code}
+	r = requests.post("https://api.instagram.com/oauth/access_token", data=payload)
+	access_token = r.json()['access_token']
+	return access_token
 
 
 ### API ###
