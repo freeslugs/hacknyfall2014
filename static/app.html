@@ -87,11 +87,18 @@
     <script type="text/javascript">
     
       $(document).ready(function() {
-        var userId = "7152524";
+        
+        var userId = getParameterByName("user_id");
+        if(!userId) {  userId = "7152524"; }
         $.get('http://127.0.0.1:5000/image-processing?user_id='+ userId, cb);
 
         $("#explore").click(function () {
-          console.log("explore")
+          console.log(userId)
+          var url = 'http://127.0.0.1:5000/exploration?id='+ userId+ '&status=gallery&visited=[]';
+          console.log(url);
+          $.get(url, function (id) {
+            console.log(id)
+          });
         })
       });
 
@@ -137,6 +144,13 @@
           }
         });
         callback();
+      }
+
+      function getParameterByName(name) {
+        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+        var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+          results = regex.exec(location.search);
+        return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
       }
 
     </script>
