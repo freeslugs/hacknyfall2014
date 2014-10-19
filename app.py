@@ -6,7 +6,6 @@ from mongoengine import *
 import json
 # from bson import json_util
 
-
 app = Flask(__name__)
 app.config["MONGODB_SETTINGS"] = {'DB': "hacknyfall2014"}
 connect('hacknyfall2014', host='mongodb://columbia:giladabc@ds047040.mongolab.com:47040/hacknyfall2014')
