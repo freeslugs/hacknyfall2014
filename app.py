@@ -32,6 +32,7 @@ def hello_world():
 def instagram_callback():
   code = request.args['code']
   token = get_access_token_instagram(code)
+  
   return token
   # save_token 
   # render gallery
@@ -59,16 +60,27 @@ class Clarifai(restful.Resource):
     return tags
 
 def get_clarifai():
-    token = clarifai_get_access_token()
-    tags = clarifai_get_tags(token)
-    return tags
+  token = clarifai_get_access_token()
+  tags = clarifai_get_tags(token)
+  return tags
 
 
 class ImageProcessing(restful.Resource):
   def get(self):
-    code = request.args['id']
-    print get_clarifai()
-    return "helloL"
+    user_id = request.args['user_id']
+    user = User.objects(user_id=user_id).first()
+    print user.images
+
+    return user
+    # get user by user_id
+    # for image in user:
+    #   get clarafai image url
+    #   save tags to img
+    
+
+    # print get_clarifai()
+    
+    # return "helloL"
 
 api.add_resource(Clarifai, '/clarifai')
 api.add_resource(ImageProcessing, '/image-process')
@@ -93,10 +105,6 @@ def clarifai_get_access_token():
 def clarifai_get_tags(token, url="http://www.clarifai.com/img/metro-north.jpg"):
 	r = requests.get('https://api.clarifai.com/v1/tag/?url='+url+'&access_token='+token)
 	return r.json()
-
-
-def parse_instagram_callback(code):
-  return "hello"
 
 if __name__ == '__main__':
 	app.run()
