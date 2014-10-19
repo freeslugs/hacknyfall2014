@@ -5,6 +5,8 @@ from flask.ext.mongoengine import MongoEngine
 
 
 app = Flask(__name__)
+app.config["MONGODB_SETTINGS"] = {'DB': "hacknyfall2014"}
+connect('hacknyfall2014', host='mongodb://columbia:giladabc@ds047040.mongolab.com:47040/hacknyfall2014')
 api = restful.Api(app)
 db = MongoEngine(app)
 
@@ -43,8 +45,19 @@ class Clarifai(restful.Resource):
     tags = clarifai_get_tags(token)
     return tags
 
+def get_clarifai():
+    token = clarifai_get_access_token()
+    tags = clarifai_get_tags(token)
+    return tags
+
+
+class ImageProcessing(restful.Resource):
+  def get(self):
+      print get_clarifai()
+      return "helloL"
 
 api.add_resource(Clarifai, '/clarifai')
+api.add_resource(ImageProcessing, '/image-process')
 
 
 
