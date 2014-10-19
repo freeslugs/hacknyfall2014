@@ -32,9 +32,11 @@ def instagram_callback():
 def get_access_token_instagram(code):
 	payload = {'client_id': '96eea83eeeed431490a2997dcb597d22', 'client_secret': 'd9a08fd300854c9e9da1a4fe2035db1b', 'grant_type': 'authorization_code', 'redirect_uri': 'http://127.0.0.1:5000/instagram-redirect', 'code':code}
 	r = requests.post("https://api.instagram.com/oauth/access_token", data=payload)
-	print r.json()
+	# print r.json()
 	access_token = r.json()['access_token']
-	return access_token
+	print r.json()['user']['id']
+	print r.json()['user']['full_name']
+	return access_token, 
 
 def get_images_instagram(access_token):
 	r = requests.get("https://api.instagram.com/v1/users/self/media/recent?access_token="+access_token)
