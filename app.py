@@ -93,8 +93,25 @@ def nearest_gallery(current_gal):
         next_gal=gallery        
   return next_gal
 
-def nearest_image(current_img):
-  
+def locate_image(img):
+  coordinates=[]
+  for t in img['tags']:
+      coordinates.append(t)
+  return coordinates
+
+def nearest_image(curr_img):
+  curr_loc=locate_image(curr_img)
+  images=Image.objects()
+  min_dist = sys.maxint
+  for img in images:
+    if img != curr_img: #visited
+      next_loc=locate_image(img)
+      dist=distance(curr_loc,next_loc)
+      if dist<min_dist:
+        min_dist=dist
+        next_img=img
+  return next_img
+        
 
 def distance(curr, nxt):
   distance=0
