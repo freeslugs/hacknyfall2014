@@ -16,7 +16,7 @@ app.debug = True
 clarifai_token = "IudTqeJRSFLpTl3Dj0nPgPP6AVsLeS"
 
 class Tag(db.Document):
-  tag = StringField(max_length=55)
+  tag_id = StringField(required=True)
   prob = DecimalField(required=True)
 
 class Image(db.Document):
@@ -28,6 +28,9 @@ class User(db.Document):
   user_id = db.StringField(required=True)
   token = db.StringField(required=True)
   images = ListField(ReferenceField(Image))
+
+class MasterTags(db.Document):
+  tag = StringField(max_length=55)
 
 ### USER GUI ###
 
@@ -58,36 +61,6 @@ def instagram_callback():
 
 ### API ###
 
-# class Clarifai(restful.Resource):
-#   def get(self):
-#     # request.form
-#     # token = clarifai_get_access_token()
-#     tags = clarifai_get_tags(clarifai_token)
-#     return tags
-
-# def get_clarifai():
-#   token = clarifai_get_access_token()
-#   tags = clarifai_get_tags(token)
-#   return tags
-
-
-# class ImageProcessing(restful.Resource):
-#   def get(self):
-#     user_id = request.args['user_id']
-#     user = User.objects(user_id=user_id).first()
-#     print user.images
-
-#     return user
-#     # get user by user_id
-#     # for image in user:
-#     #   get clarafai image url
-#     #   save tags to img
-    
-
-#     # print get_clarifai()
-    
-#     # return "helloL"
-    # 
 class ImageProcessing(restful.Resource):
   def get(self):
     user_id = request.args['user_id']
@@ -102,9 +75,8 @@ class ImageProcessing(restful.Resource):
     # return json_util.dumps(user)
     # return {'data': user.images.to_json()}
     # print get_clarifai()
-    test = user.images[0].tags[0].tag
-    print test
-    return test
+    # test = user.images[0].tags[0].tag
+    return "test"
 
 # api.add_resource(Instagram, '/instagram')
 # api.add_resource(Clarifai, '/clarifai')
@@ -142,9 +114,16 @@ def clarifai_get_tags(image, token=clarifai_token):
   data = r.json()['results'][0]['result']['tag']
   tags = data['classes']
   probs = data['probs']
-  
+  # rolling sum of probabbilities
   for i in xrange(0,len(tags)):
-    tag = Tag(prob=probs[i], tag=tags[i])
+    # If tag already exists in huge list
+    existing_tag = MasterTags.objects(tag=tags[i]).first()
+    if existing_tag:
+      tag = Tag(prob=probs[i], tag_id=str(existing_tag.id))
+    else: 
+      new_tag = MasterTags(tag=tags[i])
+      new_tag.save()
+      tag = Tag(prob=probs[i], tag_id=str(new_tag.id))
     tag.save()
     image.tags.append(tag)
   image.save()
@@ -153,14 +132,3 @@ def clarifai_get_tags(image, token=clarifai_token):
 
 if __name__ == '__main__':
 	app.run()
-
-
-
-# function for getting a code from user
-# essentially user logins 
-# we need to handle the callback
-# extract the code
-# use the code in another request ot get the acces token
-# save that for a user
-# use the token to make requests for pics
-# 
