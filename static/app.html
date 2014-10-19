@@ -18,9 +18,17 @@
     <![endif]-->
   </head>
   <body>
-    <div class="container">
-      <div class="col-md-12 text-center"><h1>Hello, world!</h1></div>
-      <div class="carousel slide" data-ride="carousel" data-type="multi" data-interval="3000" id="myCarousel">
+    <div class="container" style="padding-top:50px;">
+      <ol class="breadcrumb" style="background: white;">
+        <li>Home</li>
+      </ol>
+      <div class="col-md-12 text-center">
+        <h1><a id="explore" href="#"><span style="font-size: 20px;"> Explore!</span> <i class="glyphicon glyphicon-globe" ></i></a></h1>
+        <h1 style="padding: 50px 0;">Insta-World!</h1>
+        
+      </div>
+      
+      <div class="carousel slide" data-ride="carousel" data-type="multi" data-interval="3000" id="myCarousel" style="margin-top: 100px;">
         <div class="carousel-inner">
           <!-- <div class="item ">
             <div class="col-md-2 col-sm-6 col-xs-12"><a href="#"><img src="http://placehold.it/500/e499e4/fff&amp;text=1" class="img-responsive"></a></div>
@@ -60,11 +68,11 @@
       </div>
     </div>
 
-    // <script $("#pop").on("click", function() 
+    <!--// <script $("#pop").on("click", function() 
     // {
     //   $('#imagepreview').attr('src', $('#imageresource').attr('src'));
     //   $('#imagemodal').modal('show');
-    // });></script>
+    // });></script>-->
 
     <script $("#pop").on("click", function(e) {
       e.preventDefault();
@@ -76,9 +84,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="js/bootstrap.min.js"></script>
-    <script src="js/owl.carousel.min.js"></script>
     <script type="text/javascript">
-      console.log("test");
+    
       $(document).ready(function() {
         var userId = "7152524";
         $.get('http://127.0.0.1:5000/image-processing?user_id='+ userId, cb);
@@ -93,7 +100,7 @@
             className += ' active'
           }
           var el = "<div class='"+ className + "'>" + 
-                   "<div class='col-md-2 col-sm-6 col-xs-12'><a href='#'><img src='" + photos[i].url + "' class='img-responsive'></a>" + 
+                   "<div class='col-md-3'><a href='#'><img id='" + photos[i].id + "' src='" + photos[i].url + "' class='img-responsive'></a>" + 
                    "</div>";      
           var img = $(el);
           
@@ -106,10 +113,9 @@
         };
 
         activateCarousel();
-
       }
 
-      function activateCarousel() {
+      function activateCarousel(callback) {
         $('.carousel[data-type="multi"] .item').each(function(){
           var next = $(this).next();
           if (!next.length) {
@@ -117,7 +123,7 @@
           }
           next.children(':first-child').clone().appendTo($(this));
           
-          for (var i=0;i<4;i++) {
+          for (var i=0;i<2;i++) {
             next=next.next();
             if (!next.length) {
               next = $(this).siblings(':first');
@@ -126,6 +132,7 @@
             next.children(':first-child').clone().appendTo($(this));
           }
         });
+        callback();
       }
 
     </script>
