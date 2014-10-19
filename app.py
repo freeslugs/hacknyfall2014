@@ -96,7 +96,7 @@ def nearest_gallery(current_gal):
 def locate_image(img):
   coordinates=[]
   for t in img['tags']:
-      coordinates.append(Coordinate(t['tag_id'],t['prob']))
+      coordinates.append(t)
   return coordinates
 
 def nearest_image(curr_img):
