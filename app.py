@@ -28,7 +28,7 @@ class Coordinate(db.Document):
 class Image(db.Document):
   url = db.StringField(required=True)
   tags = ListField(ReferenceField(Tag))
-  gallery = ReferenceField('User')
+  gallery = StringField(required=True)
 
 class User(db.Document):
   name = db.StringField(required=True)
@@ -193,7 +193,7 @@ def get_images_instagram(user):
   r = requests.get("https://api.instagram.com/v1/users/self/media/recent?access_token="+access_token)
   images = r.json()
   for image in images['data']:
-    img = Image(gallery=user.user_id,url=image['images']['standard_resolution']['url'])
+    img = Image(gallery=user['user_id'],url=image['images']['standard_resolution']['url'])
     img.save()
     user.images.append(img)
     user.save()
