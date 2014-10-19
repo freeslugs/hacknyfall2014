@@ -47,13 +47,13 @@
         
         var userId = getParameterByName("user_id");
         if(!userId) {  userId = "7152524"; }
-        $.get('http://127.0.0.1:5000/image-processing?user_id='+ userId, cb);
+        $.get('http://giladscoolapp.herokuapp.com/image-processing?user_id='+ userId, cb);
 
         var visitedGalleries = [userId].concat(getParameterByName("visited"));
 
         $("#explore").click(function () {
           console.log(userId)
-          var url = 'http://127.0.0.1:5000/exploration?id='+ userId+ '&status=gallery&visited='+ visitedGalleries;
+          var url = 'http://giladscoolapp.herokuapp.com/exploration?id='+ userId+ '&status=gallery&visited='+ visitedGalleries;
           console.log(url);
           $.get(url, function (newId) {
             var newUrl = window.location.origin + window.location.pathname + "?user_id=" + newId + "&visited=" + visitedGalleries

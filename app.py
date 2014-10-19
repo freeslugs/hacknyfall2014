@@ -7,7 +7,7 @@ import json
 import sys, math
 from flask.ext.cors import CORS, cross_origin
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='static')
 app.config["MONGODB_SETTINGS"] = {'DB': "hacknyfall2014"}
 connect('hacknyfall2014', host='mongodb://columbia:giladabc@ds047040.mongolab.com:47040/hacknyfall2014')
 api = restful.Api(app)
@@ -44,7 +44,7 @@ class MasterTags(db.Document):
 
 @app.route('/')
 def hello_world():
-  return 'Hello World!'
+  return app.send_static_file('index.html')
 
 @app.route('/instagram-redirect')
 def instagram_callback():
@@ -65,7 +65,7 @@ def instagram_callback():
   return user.user_id
 
 # client side auth 
-# https://api.instagram.com/oauth/authorize/?client_id=96eea83eeeed431490a2997dcb597d22&redirect_uri=http://127.0.0.1:5000/instagram-redirect&response_type=code
+# https://api.instagram.com/oauth/authorize/?client_id=96eea83eeeed431490a2997dcb597d22&redirect_uri=http://giladscoolapp.herokuapp.com/instagram-redirect&response_type=code
 
 ### API ###
 #
@@ -180,7 +180,7 @@ api.add_resource(Exploration, '/exploration')
 
 
 def get_user_info(code):
-  payload = {'client_id': '96eea83eeeed431490a2997dcb597d22', 'client_secret': 'd9a08fd300854c9e9da1a4fe2035db1b', 'grant_type': 'authorization_code', 'redirect_uri': 'http://127.0.0.1:5000/instagram-redirect', 'code':code}
+  payload = {'client_id': '96eea83eeeed431490a2997dcb597d22', 'client_secret': 'd9a08fd300854c9e9da1a4fe2035db1b', 'grant_type': 'authorization_code', 'redirect_uri': 'http://giladscoolapp.herokuapp.com/instagram-redirect', 'code':code}
   r = requests.post("https://api.instagram.com/oauth/access_token", data=payload)
   data = r.json()
   access_token = data['access_token']
