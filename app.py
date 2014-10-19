@@ -2,6 +2,7 @@ import requests
 from flask import Flask, request
 from flask.ext import restful
 from flask.ext.mongoengine import MongoEngine
+from mongoengine import *
 
 
 app = Flask(__name__)
@@ -9,6 +10,17 @@ app.config["MONGODB_SETTINGS"] = {'DB': "hacknyfall2014"}
 connect('hacknyfall2014', host='mongodb://columbia:giladabc@ds047040.mongolab.com:47040/hacknyfall2014')
 api = restful.Api(app)
 db = MongoEngine(app)
+
+class Image(db.Document):
+  url = db.StringField(required=True)
+  tags = ListField(StringField(max_length=55))
+
+class User(db.Document):
+  name = db.StringField(required=True)
+  user_id = db.StringField(required=True)
+  token = db.StringField(required=True)
+  images = ListField(ReferenceField(Image))
+
 
 ### USER GUI ###
 
@@ -41,6 +53,7 @@ def get_access_token_instagram(code):
 
 class Clarifai(restful.Resource):
   def get(self):
+    request.form
     token = clarifai_get_access_token()
     tags = clarifai_get_tags(token)
     return tags
@@ -53,8 +66,9 @@ def get_clarifai():
 
 class ImageProcessing(restful.Resource):
   def get(self):
-      print get_clarifai()
-      return "helloL"
+    code = request.args['id']
+    print get_clarifai()
+    return "helloL"
 
 api.add_resource(Clarifai, '/clarifai')
 api.add_resource(ImageProcessing, '/image-process')
