@@ -77,12 +77,12 @@ class Exploration(restful.Resource):
     visited = request.args['visited']
     # return user.user_id
     if status=="gallery":
-      test=nearest_gallery(User.objects(user_id=the_id).first(),visited)
-      return "gallery"+test.user_id
+      nearest_gal=nearest_gallery(User.objects(user_id=the_id).first(),visited)
+      return nearest_gal.user_id
     else:
       image=Image.objects(id=the_id).first()
-      test = nearest_image(image,visited)
-      return "image"+str(test.id)
+      nearest_img = nearest_image(image,visited)
+      return str(nearest_img.id)
     # location=
     # status='gallery' # or 'image'
 
