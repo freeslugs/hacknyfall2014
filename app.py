@@ -93,7 +93,7 @@ def nearest_gallery(current_gal):
         next_gal=gallery        
   return next_gal
 
-def nearest_image(current_img):
+# def nearest_image(current_img):
   
 
 def distance(curr, nxt):
