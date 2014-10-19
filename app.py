@@ -69,10 +69,16 @@ def instagram_callback():
 #
 class Exploration(restful.Resource):
   def get(self):
-    user = User.objects(user_id=request.args['user_id']).first()
+    the_id = request.args['id']
+    status = request.args['status']
     # return user.user_id
-    test = nearest_gallery(user)
-    return test.user_id
+    if status=="gallery":
+      test=nearest_gallery(User.objects(user_id=the_id).first())
+      return "gallery"+test.user_id
+    else:
+      image=Image.objects(id=the_id).first()
+      test = nearest_image(image)
+      return "image"+str(test.id)
     # location=
     # status='gallery' # or 'image'
 
