@@ -39,19 +39,26 @@
     <script type="text/javascript">
       console.log("test");
       $(document).ready(function() {
-        $.get('http://www.google.com', cb(data));
+        $.get('http://httpbin.org/ip', cb);
+      });
 
-        function cb (photos) {
-          data = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
-          for (var i = 0; i < data.length; i++) {
-            var el = "<div class='item'>" + 
-                     "<div class='col-md-2 col-sm-6 col-xs-12'><a href='#'><img src='http://placehold.it/500/e477e4/fff&amp;text=2' class='img-responsive'></a>" + 
-                     "</div>";      
-            var img = $(el);
-            $(".carousel-inner").append(img)    
+      function cb (photos) {
+        console.log(photos);
+        var data = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
+        for (var i = 0; i < data.length; i++) {
+          var src = 'http://placehold.it/500/e477e4/fff&amp;text=2';
+          var el = "<div class='item'>" + 
+                   "<div class='col-md-2 col-sm-6 col-xs-12'><a href='#'><img src='" + src + "' class='img-responsive'></a>" + 
+                   "</div>";      
+          var img = $(el);
+          $(".carousel-inner").append(img)    
 
-          };
-        }
+        };
+
+        activateCarousel();
+      }
+
+      function activateCarousel() {
         $('.carousel[data-type="multi"] .item').each(function(){
           var next = $(this).next();
           if (!next.length) {
@@ -68,8 +75,8 @@
             next.children(':first-child').clone().appendTo($(this));
           }
         });
+      }
 
-      });
     </script>
   </body>
 </html>

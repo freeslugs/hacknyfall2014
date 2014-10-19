@@ -22,3 +22,6 @@
 	.carousel-inner .prev		 { left: -16.7%; }	
 }
 
+.carousel-control > i {
+	margin-top: 15px !important;
+}
