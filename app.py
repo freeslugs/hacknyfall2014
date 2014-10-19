@@ -111,8 +111,7 @@ def nearest_image(curr_img):
         min_dist=dist
         next_img=img
   return next_img
-      
-  
+        
 
 def distance(curr, nxt):
   distance=0
